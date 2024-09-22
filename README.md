@@ -1,62 +1,169 @@
-## ASP.NET Core
 
-is a cross-platform, hight-performance, open--source framework for building modern, cloud-enabled web application and services.
+### 🟢 Introduction to HTTP
+HTTP is an application-protocol that defines set of rules to send request from
+to server and send response from server to browser. <br />
 
-### Cross-platform
+Initially developed by Time Berners Lee, later standardized by IETF (Internet Engineering Task Force)
+and W3C (World Wide Web Consortiums)
 
-ASP.NET Core apps can be hosted on window, LINUX and Mac
+![img_1.png](img_1.png)
 
-### Can be hosted on difference service
+### 🟢 HTTP Response
 
-Support kestrel, IIS, Nginx, Docker, Apache
+![img_2.png](img_2.png)
+![img_3.png](img_3.png)
+![img_4.png](img_4.png)
 
-### Open-source
+### 🟢 HTTP Status Codes
+![img_5.png](img_5.png)
 
-Contributed by over 1000+ contributors on Github github.com//dotnet/aspnetcore
+```javascript
+var builder = WebApplication.CreateBuilder(args);
+var app = builder.Build();
 
-### Clod-enable
+app.Run(async (HttpContext context) =>
+{
+    if (1 == 1)
+    {
+        context.Response.StatusCode = 200;
+    }
+    else
+    {
+        context.Response.StatusCode = 400;
+    }
+    await context.Response.WriteAsync("Hello");
+    await context.Response.WriteAsync(" World!");
+});
 
-Out-of-box support for Microsoft Azure
+app.Run();
 
-### Part of ASP.NET Core
+```
 
-- **MVC**: For create mediuum to complex web application
-- **Web API**: For creating RESTful service for all types of client application.
-- **Razor Pages**: For creating simple & page-focused web application.
-- **Blazor**: For creating web application with c# code both on client side and server-side
+### 🟢 HTTP Response Headers
+![img_6.png](img_6.png)
+![img_7.png](img_7.png)
+![img_8.png](img_8.png)
 
-### Prerequisites
+```javascript
+var builder = WebApplication.CreateBuilder(args);
+var app = builder.Build();
 
-- **C#**: Classes, Interface, Inheritance, async/await, Extension Methods, Lambda Expressions etc.
-- **HTML, CSS, JavaScript, Jquery**: Intermediate Level
+app.Run(async (HttpContext context) =>
+{
+    context.Response.Headers["My-Key"] = "my value";
+    context.Response.Headers["Server"] = "my server value";
+    await context.Response.WriteAsync("<h1>Hello World!</h1>");
+    await context.Response.WriteAsync("<h2>Hello World!</h2>");
+});
 
-### WebForms VS ASP.NET MVC VS ASP.NET Core
+app.Run();
+```
+### 🟢 HTTP Request
+![img_9.png](img_9.png)
 
-- **ASP.NET Web Forms**: (2002)
-  - Performance issues due to server events and view-state.
-  - Not Cloud-friendly
-  - Not Open-source
-  - Event-driven development
-- **ASP.NET MVC**: (2009)
-  - Performance issue due to some dependencies with asp.net (.net framework)
-  - Slightly cloud-friendly
-  - Model-view-controller (MVC) pattern
-  - Open-source
-- **ASP.NET Core**: (2016)
-  - Fast performance
-  - cloud-friendly
-  - Model-view-controller (MVC) pattern
-  - Open-source
+```javascript
+var builder = WebApplication.CreateBuilder(args);
+var app = builder.Build();
 
-### Kestrel and Other Servers
-- Application Servers: Kestrel
-- Reverse Proxy Servers: IIS, Nginx, Apache
-![img.png](img.png)
+app.Run(async (HttpContext context) =>
+{
+    string path = context.Request.Path;
+    string method = context.Request.Method;
+    
+    context.Response.Headers["Context-type"] = "text/html";
+    await context.Response.WriteAsync($"<p>{path}</p>");
+    await context.Response.WriteAsync($"<p>{method}</p>");
+});
 
-### Benefits of Reverse Proxy Servers
-- Load Balancing
-- Caching
-- URL Rewriting
-- Decompressing the requests
-- Authentication
-- Decryption of SSL Certificates
+app.Run();
+```
+
+### 🟢 Query String
+![img_10.png](img_10.png)
+
+```javascript
+var builder = WebApplication.CreateBuilder(args);
+var app = builder.Build();
+
+app.Run(async (HttpContext context) =>
+{
+    context.Response.Headers["content-type"] = "text/html";
+    if (context.Request.Method == "GET")
+    {
+        if (context.Request.Query.ContainsKey("id"))
+        {
+            string? id = context.Request.Query["id"];
+            await context.Response.WriteAsync($"<h1>{id}</h1>");
+        }
+    }
+});
+
+app.Run();
+```
+
+### 🟢 HTTP Request Header
+
+```javascript
+var builder = WebApplication.CreateBuilder(args);
+var app = builder.Build();
+
+app.Run(async (HttpContext context) =>
+{
+    context.Response.Headers["Content-Type"] = "text/html";
+    if (context.Request.Headers.ContainsKey("User-Agent"))
+    {
+        string? userAgent = context.Request.Headers["User-Agent"];
+        await context.Response.WriteAsync($"<p>{userAgent}</p>");
+    }
+});
+
+app.Run();
+```
+
+### 🟢 Postman
+```javascript
+var builder = WebApplication.CreateBuilder(args);
+var app = builder.Build();
+
+app.Run(async (HttpContext context) =>
+{
+    context.Response.Headers["Content-Type"] = "text/html";
+    if (context.Request.Headers.ContainsKey("AuthorizationKey"))
+    {
+        string? userAgent = context.Request.Headers["AuthorizationKey"];
+        await context.Response.WriteAsync($"<p>{userAgent}</p>");
+    }
+});
+
+app.Run();
+```
+
+## 🟢 HTTP Request Methods
+![img_11.png](img_11.png)
+
+### 🟢 HTTP Get VS Post
+```javascript
+    using Microsoft.Extensions.Primitives;
+
+var builder = WebApplication.CreateBuilder(args);
+var app = builder.Build();
+
+app.Run(async (HttpContext context) =>
+{
+    StreamReader reader = new StreamReader(context.Request.Body);
+    string body = await reader.ReadToEndAsync();
+
+    Dictionary<string, StringValues> queryDict = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(body);
+    if (queryDict.TryGetValue("firstName", out StringValues firstNameValues))
+    {
+        string? firstName = firstNameValues.FirstOrDefault();
+        await context.Response.WriteAsync(firstName ?? "Unknown");
+    }
+else
+    {
+        await context.Response.WriteAsync("First name not provided.");
+    }
+});
+
+app.Run();
+```
