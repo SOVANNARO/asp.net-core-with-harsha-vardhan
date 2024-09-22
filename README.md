@@ -60,7 +60,3 @@ Out-of-box support for Microsoft Azure
 - Decompressing the requests
 - Authentication
 - Decryption of SSL Certificates
-
-Next Action:
-https://drive.google.com/drive/folders/1mJeAhfcqcErlc0PF434gjieIEM9l7fU1
-001 Introduction to HTTP.mp4
