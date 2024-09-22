@@ -47,3 +47,20 @@ Out-of-box support for Microsoft Azure
   - cloud-friendly
   - Model-view-controller (MVC) pattern
   - Open-source
+
+### Kestrel and Other Servers
+- Application Servers: Kestrel
+- Reverse Proxy Servers: IIS, Nginx, Apache
+![img.png](img.png)
+
+### Benefits of Reverse Proxy Servers
+- Load Balancing
+- Caching
+- URL Rewriting
+- Decompressing the requests
+- Authentication
+- Decryption of SSL Certificates
+
+Next Action:
+https://drive.google.com/drive/folders/1mJeAhfcqcErlc0PF434gjieIEM9l7fU1
+001 Introduction to HTTP.mp4

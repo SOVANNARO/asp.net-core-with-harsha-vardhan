@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "asp.net-core-with-harsha-vardhan/1.0.0": {
+        "runtime": {
+          "asp.net-core-with-harsha-vardhan.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "asp.net-core-with-harsha-vardhan/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
