@@ -1,62 +1,110 @@
-## ASP.NET Core
+### 🟢 Middleware
+- Middleware is a component that is assembled into the application pipeline to handle requests and response.
+- Middlewares are chained one-after-other and execute in the same sequence how they're added.
 
-is a cross-platform, hight-performance, open--source framework for building modern, cloud-enabled web application and services.
+#### Asp.net Core application-pipeline
+ Middleware1 => Middleware2 => Middleware3
+ 
+Middleware can be a request delegate (anonymous method or lambda expression) [or] a class.
 
-### Cross-platform
+### 🟢 Run
+![Capture.PNG](Capture.PNG)
 
-ASP.NET Core apps can be hosted on window, LINUX and Mac
+### Middleware Chain
+Middleware are chained one-after-other and execute in the same sequence how they are added.
 
-### Can be hosted on difference service
+![Middleware Chain.PNG](Middleware%20Chain.PNG)
+![Middleware Chain2.PNG](Middleware%20Chain2.PNG)
+```javascript
+var builder = WebApplication.CreateBuilder(args);
+var app = builder.Build();
 
-Support kestrel, IIS, Nginx, Docker, Apache
+// middleware 1
+app.Use(async (HttpContext context, RequestDelegate next) =>
+{
+    await context.Response.WriteAsync("Hello from Middleware 1!\n");
+    await next(context);
+});
 
-### Open-source
+// middleware 2
+app.Use(async (HttpContext context, RequestDelegate next) =>
+{
+    await context.Response.WriteAsync("Hello from Middleware 2!\n");
+    await next(context);
+});
 
-Contributed by over 1000+ contributors on Github github.com//dotnet/aspnetcore
+// middleware 3
+app.Run(async (HttpContext context) =>
+{
+    await context.Response.WriteAsync("Hello from Middleware 3!\n");
+});
 
-### Clod-enable
+app.Run();
+```
 
-Out-of-box support for Microsoft Azure
+### Middleware class
+Middleware class is used to separate the middleware logic from a lambda expression to separate/reusable class
 
-### Part of ASP.NET Core
+![Middleware class.PNG](Middleware%20class.PNG)
 
-- **MVC**: For create mediuum to complex web application
-- **Web API**: For creating RESTful service for all types of client application.
-- **Razor Pages**: For creating simple & page-focused web application.
-- **Blazor**: For creating web application with c# code both on client side and server-side
+### Custom Conventional Middleware class
+```javascript
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 
-### Prerequisites
+namespace asp.net_core_with_harsha_vardhan.CustomeMiddleware
+{
+    // You may need to install the Microsoft.AspNetCore.Http.Abstractions package into your project
+    public class HelloCustomMiddleware
+    {
+        private readonly RequestDelegate _next;
 
-- **C#**: Classes, Interface, Inheritance, async/await, Extension Methods, Lambda Expressions etc.
-- **HTML, CSS, JavaScript, Jquery**: Intermediate Level
+        public HelloCustomMiddleware(RequestDelegate next)
+        {
+            _next = next;
+        }
 
-### WebForms VS ASP.NET MVC VS ASP.NET Core
+        public async Task Invoke(HttpContext httpContext)
+        {
+            if (httpContext.Request.Query.ContainsKey("firstName") && httpContext.Request.Query.ContainsKey("lastName"))
+            {
+                string fullName = httpContext.Request.Query["firstName"] + " " + httpContext.Request.Query["lastName"];
+                await httpContext.Response.WriteAsync("Hello " + fullName + "\n");
+            }
 
-- **ASP.NET Web Forms**: (2002)
-  - Performance issues due to server events and view-state.
-  - Not Cloud-friendly
-  - Not Open-source
-  - Event-driven development
-- **ASP.NET MVC**: (2009)
-  - Performance issue due to some dependencies with asp.net (.net framework)
-  - Slightly cloud-friendly
-  - Model-view-controller (MVC) pattern
-  - Open-source
-- **ASP.NET Core**: (2016)
-  - Fast performance
-  - cloud-friendly
-  - Model-view-controller (MVC) pattern
-  - Open-source
+            await _next(httpContext);
+        }
+    }
 
-### Kestrel and Other Servers
-- Application Servers: Kestrel
-- Reverse Proxy Servers: IIS, Nginx, Apache
-![img.png](img.png)
+    // Extension method used to add the middleware to the HTTP request pipeline.
+    public static class HelloCustomMiddlewareExtensions
+    {
+        public static IApplicationBuilder UseHelloCustomMiddleware(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<HelloCustomMiddleware>();
+        }
+    }
+}
+```
 
-### Benefits of Reverse Proxy Servers
-- Load Balancing
-- Caching
-- URL Rewriting
-- Decompressing the requests
-- Authentication
-- Decryption of SSL Certificates
+### Right Order of the middleware
+![Right Order of Middleware.PNG](Right%20Order%20of%20Middleware.PNG)
+![Right Order of the middleware.PNG](Right%20Order%20of%20the%20middleware.PNG)
+
+### Middleware - UseWhen
+![Middleware - useWhen.PNG](Middleware%20-%20useWhen.PNG)
+
+```javascript
+app.UseWhen(context => context.Request.Query.ContainsKey("username"), app =>
+{
+    app.Use(async (context, next) =>
+    {
+        await context.Response.WriteAsync("Hello from Middleware Branch \n");
+        await next(context);
+    });
+});
+```
+
+003 Middleware Chain.mp4
+https://drive.google.com/drive/folders/1oreJERA05ZgkdIIMrXoekUnuKyRYibgE
